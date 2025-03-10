@@ -9,6 +9,6 @@ function convertToBool(text, fault = 'true') {
 
 
 module.exports = {
-BOT_NAME: process.env.BOT_NAME === undefined ? '': process.env.BOT_NAME,
-SEND_MESSAGE: process.env.SEND_MESSAGE === undefined ? '': process.env.SEND_MESSAGE,
+BOT_NAME: process.env.BOT_NAME === undefined ? 'vishwa ofc public session id genrator': process.env.BOT_NAME,
+SEND_MESSAGE: process.env.SEND_MESSAGE === undefined ? 'sucssesfull genarate session id✔️💀': process.env.SEND_MESSAGE,
 };
