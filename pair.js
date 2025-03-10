@@ -87,10 +87,10 @@ XeonBotInc.sendMessage(user_jid, {
 text: desc,
 contextInfo: {
 externalAdReply: {
-title: "© 𝐒𝐚𝐡𝐚𝐬 𝐓𝐞𝐜𝐡 𝐃𝐞𝐯𝐞𝐥𝐨𝐦𝐩𝐞𝐧𝐭.💗",
-body: `SAHAS-MD-V2 | MULTI-DEVICE-WHATSAPP-BOT`,
-thumbnailUrl: "https://pomf2.lain.la/f/gssbhhf4.jpg",
-sourceUrl: "https://whatsapp.com/channel/0029VaiTjMlK5cDLek3bB533",
+title: "©VISHWA DEPLOYMENT",
+body: `USE YOUR | MULTI-DEVICE-WHATSAPP-BOTS`,
+thumbnailUrl: "https://i.ibb.co/xSy3xBt3/5937.jpg",
+sourceUrl: "https://whatsapp.com/channel/0029VapD0tH0rGiF4caXwp3d",
 mediaType: 1,
 renderLargerThumbnail: true
 }  
