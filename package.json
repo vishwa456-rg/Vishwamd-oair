@@ -4,9 +4,9 @@
     "description": "this is official site of SAHAS-MD.",
     "main": "index.js",
     "scripts": {
-      "start": "pm2 start index.js --deep-monitoring --attach --name sahas tech pair web",
+      "start": "pm2 start index.js --deep-monitoring --attach --name sahas tech pair wb",
       "stop": "pm2 stop fv2web",
-     "restart": "pm2 restart sahas tech pair web"
+     "restart": "pm2 restart sahas tech pair wb"
     },
   "dependencies": {
     "@whiskeysockets/baileys": "latest",
