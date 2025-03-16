@@ -1,0 +1,23 @@
+{
+"name": "SAHAS-MD-PAIR-WEB",
+    "version": "0.0.1",
+    "description": "this is official site of SAHAS-MD.",
+    "main": "index.js",
+    "scripts": {
+      "start": "pm2 start index.js --deep-monitoring --attach --name sahas tech pair web",
+      "stop": "pm2 stop fv2web",
+     "restart": "pm2 restart sahas tech pair web"
+    },
+  "dependencies": {
+    "@whiskeysockets/baileys": "latest",
+    "fs": "latest",
+    "awesome-phonenumber": "^2.64.0",
+    "pino": "^8.1.0",
+    "phone" : "3.1.30",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.1",
+    "path": "^0.12.7",
+    "megajs": "1.1.0",
+    "pm2": "^5.2.0"
+   }
+}
