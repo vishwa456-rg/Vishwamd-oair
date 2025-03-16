@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
       "start": "pm2 start index.js --deep-monitoring --attach --name vishu-md",
-      "stop": "pm2 stop fv2web",
+      "stop": "pm2 stop vishu-md",
      "restart": "pm2 restart vishu-md"
     },
   "dependencies": {
