@@ -1,11 +1,8 @@
 const express = require('express');
-const config = require("./config");
 const fs = require('fs');
 const { exec } = require("child_process");
 let router = express.Router()
 const pino = require("pino");
-let pairingInProgress;
-
 const {
     default: makeWASocket,
     useMultiFileAuthState,
@@ -14,144 +11,97 @@ const {
     Browsers,
     jidNormalizedUser
 } = require("@whiskeysockets/baileys");
-const {upload} = require('./mega')
+const { upload } = require('./mega');
 
-function removeFile(FilePath){
-    if(!fs.existsSync(FilePath)) return false;
-    fs.rmSync(FilePath, { recursive: true, force: true })
- };
+function removeFile(FilePath) {
+    if (!fs.existsSync(FilePath)) return false;
+    fs.rmSync(FilePath, { recursive: true, force: true });
+}
+
 router.get('/', async (req, res) => {
     let num = req.query.number;
-        async function XeonPair() {
-        const {
-            state,
-            saveCreds
-        } = await useMultiFileAuthState(`./session`)
-     try {
-            let XeonBotInc = makeWASocket({
+    async function PrabathPair() {
+        const { state, saveCreds } = await useMultiFileAuthState(`./session`);
+        try {
+            let PrabathPairWeb = makeWASocket({
                 auth: {
                     creds: state.creds,
-                    keys: makeCacheableSignalKeyStore(state.keys, pino({level: "fatal"}).child({level: "fatal"})),
+                    keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
                 },
                 printQRInTerminal: false,
-                logger: pino({level: "fatal"}).child({level: "fatal"}),
+                logger: pino({ level: "fatal" }).child({ level: "fatal" }),
                 browser: Browsers.macOS("Safari"),
-             });
-             if(!XeonBotInc.authState.creds.registered) {
+            });
+
+            if (!PrabathPairWeb.authState.creds.registered) {
                 await delay(1500);
-                        num = num.replace(/[^0-9]/g,'');
-                            const code = await XeonBotInc.requestPairingCode(num)
-                 if(!res.headersSent){
-                 await res.send({code});
-                     }
-                 }
-            XeonBotInc.ev.on('creds.update', saveCreds)
-            XeonBotInc.ev.on("connection.update", async (s) => {
-                const {
-                    connection,
-                    lastDisconnect
-                } = s;
-                if (connection == "open") {
+                num = num.replace(/[^0-9]/g, '');
+                const code = await PrabathPairWeb.requestPairingCode(num);
+                if (!res.headersSent) {
+                    await res.send({ code });
+                }
+            }
 
+            PrabathPairWeb.ev.on('creds.update', saveCreds);
+            PrabathPairWeb.ev.on("connection.update", async (s) => {
+                const { connection, lastDisconnect } = s;
+                if (connection === "open") {
+                    try {
+                        await delay(10000);
+                        const sessionPrabath = fs.readFileSync('./session/creds.json');
 
-		try{
-                await delay(10000);
-                    const sessionXeon = fs.readFileSync('./session/creds.json');
+                        const auth_path = './session/';
+                        const user_jid = jidNormalizedUser(PrabathPairWeb.user.id);
 
-				const xeonses = await XeonBotInc.sendMessage(XeonBotInc.user.id, { document: sessionXeon, mimetype: `application/json`, fileName: `creds.json` });
+                      function randomMegaId(length = 6, numberLength = 4) {
+                      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                      let result = '';
+                      for (let i = 0; i < length; i++) {
+                      result += characters.charAt(Math.floor(Math.random() * characters.length));
+                        }
+                       const number = Math.floor(Math.random() * Math.pow(10, numberLength));
+                        return `${result}${number}`;
+                        }
 
-		var auth_path = './session/'	
-	const user_jid = jidNormalizedUser(XeonBotInc.user.id);
+                        const mega_url = await upload(fs.createReadStream(auth_path + 'creds.json'), `${randomMegaId()}.json`);
 
-                const mega_url = await upload(fs.createReadStream(auth_path + 'creds.json'), `${user_jid}.json`);
-               
-                const string_session = mega_url.replace('https://mega.nz/file/', '')
+                        const string_session = mega_url.replace('https://mega.nz/file/', '');
 
-               const sid = config.BOT_NAME + string_session
-    
-               const dt = await XeonBotInc.sendMessage(user_jid, {
+                        const sid = string_session;
 
-                    text: sid
+                        const dt = await PrabathPairWeb.sendMessage(user_jid, {
+                            text: sid
+                        });
 
-                });
+                    } catch (e) {
+                        exec('pm2 restart prabath');
+                    }
 
-
-let eco = '*`'
-let oce = '`*'
-let oc = '>'
-
-let desc = config.SEND_MESSAGE	
-
-XeonBotInc.sendMessage(user_jid, {
-
-text: desc,
-contextInfo: {
-externalAdReply: {
-title: "© 𝐒𝐚𝐡𝐚𝐬 𝐓𝐞𝐜𝐡 𝐃𝐞𝐯𝐞𝐥𝐨𝐦𝐩𝐞𝐧𝐭.💗",
-body: `SAHAS-MD-V2 | MULTI-DEVICE-WHATSAPP-BOT`,
-thumbnailUrl: "https://pomf2.lain.la/f/gssbhhf4.jpg",
-sourceUrl: "https://whatsapp.com/channel/0029VaiTjMlK5cDLek3bB533",
-mediaType: 1,
-renderLargerThumbnail: true
-}  
-}
-},	
-{quoted:dt})		
-await delay(300);
-await XeonBotInc.ws.close()				
-		}catch(e){
-	
-
-exec('pm2 restart all')
-
-		}
-			
-			
-	await delay(100);
-	
-        return await removeFile('./session');
-        process.exit(0)
-            } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode != 401) {
-               
-		await delay(10000);
-                    XeonPair();
+                    await delay(100);
+                    return await removeFile('./session');
+                    process.exit(0);
+                } else if (connection === "close" && lastDisconnect && lastDisconnect.error && lastDisconnect.error.output.statusCode !== 401) {
+                    await delay(10000);
+                    PrabathPair();
                 }
             });
         } catch (err) {
-	     exec('pm2 restart all')
-            console.log("service restated");
-	XeonPair();
-            
-         if(!res.headersSent){
-            await res.send({code:"Service Unavailable"});
-         }
+            exec('pm2 restart prabath-md');
+            console.log("service restarted");
+            PrabathPair();
+            await removeFile('./session');
+            if (!res.headersSent) {
+                await res.send({ code: "Service Unavailable" });
+            }
         }
     }
-    return await XeonPair()
+    return await PrabathPair();
 });
 
 process.on('uncaughtException', function (err) {
-console.log('Caught exception: ', err)
-	XeonPair();
-exec('pm2 restart all')
-})
+    console.log('Caught exception: ' + err);
+    exec('pm2 restart prabath');
+});
 
 
-
-setTimeout(() => {
-  console.log('Restarting every 10 minutes is Successful ✅');
-XeonPair();
-    exec('pm2 restart all', (err, stdout, stderr) => {
-        if (err) {
-            console.error('Error restarting server:', stderr);
-        } else {
-            console.log('Server restarted successfully ✅');
-        }
-    });
-}, 600000); 
-
-
-
-
-
-module.exports = router
+module.exports = router;
